@@ -1,9 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createBrowserClient } from "@supabase/ssr";
+
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+
+  const [userId, setUserId] = useState(null);
+
+useEffect(() => {
+  const getUser = async () => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) setUserId(user.id);
+  };
+  getUser();
+}, []);
 
   const sendMessage = async () => {
   if (!input.trim()) return;
@@ -17,7 +33,7 @@ export default function Home() {
   const res = await fetch("http://localhost:8000/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages: updatedMessages }),
+    body: JSON.stringify({ messages: updatedMessages, user_id: userId }),
   });
 
   const data = await res.json();

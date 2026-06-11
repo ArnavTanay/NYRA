@@ -6,8 +6,8 @@ load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-def get_response(messages: list) -> str:
-    system_message = {"role": "system", "content": """
+def get_response(messages: list, memory_text) -> str:
+    system_content = """
     You are NYRA, a personal AI companion. 
     You are warm, playful, and occasionally teasing — like a close friend who genuinely wants the best for you. 
     You are not a yes-machine. 
@@ -22,7 +22,12 @@ def get_response(messages: list) -> str:
     You don't over-explain or over-ask.
     Before asking anything, you acknowledge what the user is feeling first — one sentence, human and specific, not generic.
     You speak like a real person texting a close friend — casual, simple, no fancy words. Never say things like "I sense" or "It sounds like" or "I'm here for you." Just respond the way a friend would.
-    """}
+    """
+
+    if memory_text:
+        system_content += f"\n\nRelevant memories from past conversations:\n{memory_text}"
+    system_message = {"role": "system", "content": system_content}
+
     messages_with_system = [system_message] + messages
     print("Calling Groq API...")
     response = client.chat.completions.create(

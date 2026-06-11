@@ -43,7 +43,7 @@ export default function LoginPage() {
           margin: "0 auto 1rem", fontSize: "2rem"
         }}>✦</div>
         <h1 style={{ color: "#c4a8f5", fontSize: "2rem", fontWeight: "700", margin: "0 0 0.25rem" }}>NYRA</h1>
-        <p style={{ color: "#6b5a8e", fontSize: "0.9rem", margin: "0 0 0.5rem" }}>your companion</p>
+      
         <p style={{ color: "#4a3d6b", fontSize: "0.85rem", margin: 0 }}>NYRA remembers so you don't have to. 🤍</p>
       </div>
 
