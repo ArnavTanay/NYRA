@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from services.groq_services import get_response
+from services.sentiment_service import classify_emotion
 import asyncio
 
 from services.embedding_service import get_embedding
@@ -20,13 +21,15 @@ class ConversationRequest(BaseModel):
 async def chat(request: ConversationRequest):
     messages = [{"role": m.role, "content": m.content} for m in request.messages]
     last_message = messages[-1]["content"]
+    emotion = classify_emotion(last_message)
     query_embedding = get_embedding(last_message)
 
     retrieved = await retrieve_memories(request.user_id, query_embedding)
 
     memory_text = "\n".join([f"Memory: {m['content']}" for m in retrieved])
 
-    response = await asyncio.to_thread(get_response, messages, memory_text)
+
+    response = await asyncio.to_thread(get_response, messages, memory_text, emotion)
     chunk = f"User: {last_message} | NYRA: {response}"
     chunk_embed = get_embedding(chunk)
     await save_memory(request.user_id, chunk, chunk_embed)
