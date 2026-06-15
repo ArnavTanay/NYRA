@@ -5,7 +5,7 @@ import { createBrowserClient } from "@supabase/ssr";
 export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState<string | null>(null);;
   const [isTyping, setIsTyping] = useState(false);
   const [greeting, setGreeting] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
