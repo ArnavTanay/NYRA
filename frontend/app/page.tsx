@@ -49,7 +49,7 @@ export default function Home() {
     setIsTyping(true);
 
     try {
-      const res = await fetch("http://localhost:8000/chat", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updatedMessages, user_id: userId }),
