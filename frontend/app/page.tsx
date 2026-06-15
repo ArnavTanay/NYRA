@@ -37,7 +37,7 @@ export default function Home() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  const sendMessage = async (text) => {
+  const sendMessage = async (text?: string) => {
     const content = text || input;
     if (!content.trim() || isTyping) return;
 
