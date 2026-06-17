@@ -14,7 +14,7 @@ export default function LoginPage() {
     if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) alert(error.message)
-      else window.location.href = "/"
+      else setTimeout(() => { window.location.href = "/" }, 500)
     } else {
       const { error } = await supabase.auth.signUp({ email, password })
       if (error) alert(error.message)
