@@ -14,7 +14,8 @@ export default function LoginPage() {
   const handleAuth = async () => {
     console.log("handleAuth called", email, password)
     if (isLogin) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      console.log("Auth result:", data, error)
       if (error) alert(error.message)
       else router.push('/')
     } else {
