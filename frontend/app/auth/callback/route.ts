@@ -2,10 +2,10 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export async function middleware(req: NextRequest) {
-  let res = NextResponse.next({
-    request: { headers: req.headers }
-  })
+export async function POST(req: NextRequest) {
+  const { email, password } = await req.json()
+
+  const res = NextResponse.json({ success: true })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,8 +16,6 @@ export async function middleware(req: NextRequest) {
           return req.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value))
-          res = NextResponse.next({ request: req })
           cookiesToSet.forEach(({ name, value, options }) =>
             res.cookies.set(name, value, options)
           )
@@ -26,15 +24,11 @@ export async function middleware(req: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-  if (!user && req.nextUrl.pathname !== '/login') {
-    return NextResponse.redirect(new URL('/login', req.url))
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 401 })
   }
 
   return res
-}
-
-export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)']
 }

@@ -11,27 +11,30 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const handleAuth = async () => {
-    if (loading) return
-    setLoading(true)
-    try {
-      if (isLogin) {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-        console.log("Auth result:", data, error)
-        if (error) {
-          alert(error.message)
+      if (loading) return
+      setLoading(true)
+      try {
+        if (isLogin) {
+          const res = await fetch('/auth/callback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          })
+          const result = await res.json()
+          if (!res.ok) {
+            alert(result.error || 'Login failed')
+          } else {
+            window.location.href = '/'
+          }
         } else {
-          window.location.href = '/'
-          return // navigating away, skip setLoading(false) below
+          const { error } = await supabase.auth.signUp({ email, password })
+          if (error) alert(error.message)
+          else alert("Check your email to confirm your account!")
         }
-      } else {
-        const { error } = await supabase.auth.signUp({ email, password })
-        if (error) alert(error.message)
-        else alert("Check your email to confirm your account!")
+      } finally {
+        setLoading(false)
       }
-    } finally {
-      setLoading(false)
     }
-  }
 
   return (
     <div style={{
@@ -119,6 +122,7 @@ export default function LoginPage() {
 
         {/* Submit */}
         <button
+          type="button"
           onClick={handleAuth}
           disabled={loading}
           style={{
