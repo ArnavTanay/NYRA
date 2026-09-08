@@ -147,7 +147,7 @@ You should feel less like an assistant and more like someone the user genuinely 
     messages_with_system = [system_message] + messages
     print("Calling Groq API...")
     response = client.chat.completions.create(
-        model="openai/gpt-oss-20b",
+        model="llama3-8b-8192",
         messages = messages_with_system
     )
     print("Got response!")
