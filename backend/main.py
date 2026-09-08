@@ -4,6 +4,10 @@ from routes.chat import router
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {"status": "healthy", "message": "Backend is running!"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "https://nyra-production.up.railway.app", "https://nyra-navy.vercel.app"],
