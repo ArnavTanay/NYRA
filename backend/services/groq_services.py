@@ -147,7 +147,7 @@ You should feel less like an assistant and more like someone the user genuinely 
     messages_with_system = [system_message] + messages
     print("Calling Groq API...")
     response = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="gemma2-9b-it",
         messages = messages_with_system
     )
     print("Got response!")
