@@ -6,6 +6,10 @@ load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+models = client.models.list()
+for m in models.data:
+    print(m.id)
+
 def get_response(messages: list, memory_text, final_sentiment) -> str:
     system_content = """
     You are NYRA, a personal AI companion.
@@ -147,7 +151,7 @@ You should feel less like an assistant and more like someone the user genuinely 
     messages_with_system = [system_message] + messages
     print("Calling Groq API...")
     response = client.chat.completions.create(
-        model="gemma2-9b-it",
+        model="openai/gpt-oss-120b",
         messages = messages_with_system
     )
     print("Got response!")
