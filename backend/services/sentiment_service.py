@@ -8,7 +8,7 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def classify_emotion(user_message: str) -> str:
     response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="openai/gpt-oss-120b",
         messages=[
             {"role": "system", "content": """You are an emotion classifier. 
             Given a message, return exactly one word from this list: 
