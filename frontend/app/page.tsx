@@ -6,6 +6,7 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [greeting, setGreeting] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -28,7 +29,14 @@ export default function Home() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUserId(user.id);
+      if (user) {
+        setUserId(user.id);
+        const name = user.user_metadata?.full_name
+          || user.user_metadata?.name
+          || user.email?.split("@")[0]
+          || "there";
+        setUserName(name);
+      }
     };
     getUser();
   }, []);
@@ -157,9 +165,11 @@ export default function Home() {
             </div>
 
             <div className="mt-auto px-5 py-4 border-t border-[rgba(255,255,255,0.06)] flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[rgba(61,42,110,0.6)] border border-[#2e2a48] flex items-center justify-center text-[12px] text-[#a78bdc] font-medium flex-shrink-0">A</div>
+              <div className="w-8 h-8 rounded-full bg-[rgba(61,42,110,0.6)] border border-[#2e2a48] flex items-center justify-center text-[12px] text-[#a78bdc] font-medium flex-shrink-0">
+                {userName ? userName[0].toUpperCase() : "?"}
+              </div>
               <div>
-                <div className="text-[13px] text-[#d0d0e8] font-medium">Arnav</div>
+                <div className="text-[13px] text-[#d0d0e8] font-medium">{userName || "Guest"}</div>
                 <div className="text-[11px] text-[#7a6a99]">free plan</div>
               </div>
             </div>
@@ -173,7 +183,7 @@ export default function Home() {
         {/* Top bar */}
         <div className="px-6 py-5 border-b border-[#13131f] flex items-start justify-between" style={{ paddingLeft: sidebarOpen ? "24px" : "48px" }}>
           <div>
-            <div className="text-[20px] font-semibold text-[#e8e8f5] tracking-tight">{greeting}, Arnav</div>
+            <div className="text-[20px] font-semibold text-[#e8e8f5] tracking-tight">{greeting}, {userName}</div>
             <div className="text-[12.5px] text-[#3e3e60] mt-1">I'm NYRA, nice to see you again.</div>
           </div>
           <div className="flex items-center gap-2">

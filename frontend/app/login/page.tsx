@@ -7,6 +7,7 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [fullName, setFullName] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -27,7 +28,13 @@ export default function LoginPage() {
             window.location.href = '/'
           }
         } else {
-          const { error } = await supabase.auth.signUp({ email, password })
+          const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { full_name: fullName }
+            }
+          })
           if (error) alert(error.message)
           else alert("Check your email to confirm your account!")
         }
@@ -75,6 +82,26 @@ export default function LoginPage() {
         <p style={{ color: "#6b5a8e", fontSize: "0.9rem", textAlign: "center", margin: "0 0 1.75rem" }}>
           {isLogin ? "Log in to continue your journey" : "Start your journey with NYRA"}
         </p>
+
+        {/* Full name — signup only */}
+        {!isLogin && (
+          <div style={{ position: "relative", marginBottom: "1rem" }}>
+            <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#6b5a8e", fontSize: "1rem" }}>👤</span>
+            <input
+              type="text"
+              placeholder="Full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              disabled={loading}
+              style={{
+                width: "100%", padding: "0.85rem 1rem 0.85rem 2.75rem",
+                backgroundColor: "#0d0d14", border: "1px solid #2a1f4e",
+                borderRadius: "10px", color: "#ffffff", fontSize: "0.95rem",
+                outline: "none", boxSizing: "border-box"
+              }}
+            />
+          </div>
+        )}
 
         {/* Email */}
         <div style={{ position: "relative", marginBottom: "1rem" }}>
